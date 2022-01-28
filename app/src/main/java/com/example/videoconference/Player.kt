@@ -5,6 +5,7 @@ import android.media.MediaPlayer
 import android.os.Vibrator
 
 var player: MediaPlayer? = null
+val zalupa = 3
 var vib: Vibrator? = null
 fun startPlay(context: Context, type: String) {
     vib = context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
