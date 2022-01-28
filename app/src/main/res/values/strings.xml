@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">Конференц</string>
+    <string name="password">Введите пароль</string>
+    <string name="email">Введите Email</string>
+    <string name="password_hint">• • • • • • • • •</string>
+    <string name="registration_text">Зарегистрироваться</string>
+    <string name="confirm_password">Повторите пароль</string>
+    <string name="sign_up">зарегистрироваться</string>
+    <string name="sign_out">Выйти</string>
+    <string name="sending_meeting_invitation">ИСХОДЯЩИЙ ВЫЗОВ</string>
+    <string name="not">New Call</string>
+    <string name="default_notification_channel_id">123</string>
+</resources>
