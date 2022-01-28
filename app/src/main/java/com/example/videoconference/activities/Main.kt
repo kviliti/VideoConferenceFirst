@@ -40,10 +40,11 @@ import com.google.firebase.firestore.DocumentSnapshot
 var listChecked = mutableListOf<UserModel>()
 
 class Main : AppCompatActivity() {
+
     private val mainViewModel: MainViewModel by viewModels()
     override fun onResume() {
         super.onResume()
-        Constants.stateApp = 1
+        stateApp = 1
         sendFCMTokenToDatabase(applicationContext)
         setContent { ListUsers() }
     }
@@ -56,12 +57,9 @@ class Main : AppCompatActivity() {
         var heightCard by remember { mutableStateOf(0.dp) }
         var visibleIcon by remember { mutableStateOf(false) }
         var visibleCheck by remember { mutableStateOf(false) }
-        val mapChecked by remember {
-            mutableStateOf(hashMapOf<String, Boolean>())
-        }
+        val mapChecked by remember { mutableStateOf(hashMapOf<String, Boolean>()) }
         val ass by animateDpAsState(
-            if (visibleCheck)
-                50.dp
+            if (visibleCheck) 50.dp
             else 0.dp
         )
         Column(
@@ -139,7 +137,7 @@ class Main : AppCompatActivity() {
                                                 Icon(
                                                     Icons.Default.Call, contentDescription = null,
                                                     Modifier
-                                                        .size(heightCard / 3)
+                                                        .size(if(!visibleCheck) heightCard / 3 else 0.dp)
                                                         .clickable {
                                                             initiateMeeting(
                                                                 user.value,
@@ -152,7 +150,7 @@ class Main : AppCompatActivity() {
                                             Icon(
                                                 Icons.Default.VideoCall, contentDescription = null,
                                                 Modifier
-                                                    .size(heightCard / 3)
+                                                    .size(if(!visibleCheck) heightCard / 3 else 0.dp)
                                                     .clickable {
                                                         initiateMeeting(
                                                             user.value,

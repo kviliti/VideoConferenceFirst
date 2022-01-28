@@ -1,7 +1,6 @@
 package com.example.videoconference.utilities
 
 
-
 import android.app.Activity
 import android.app.NotificationManager
 import android.content.Context
@@ -55,33 +54,35 @@ fun putPhotoToStorage(
     id: String,
     function: (String) -> Unit
 ) {
-    val path = FirebaseStorage.getInstance().reference.child("avatars")
-        .child(id)
-    path.putFile(uri)
-        .addOnSuccessListener {
-            path.downloadUrl.addOnSuccessListener { urine ->
-                function(urine.toString())
-            }
-        }
+   FirebaseStorage.getInstance().reference.child("avatars")
+        .child(id).apply {
+          putFile(uri)
+               .addOnSuccessListener {
+                  downloadUrl.addOnSuccessListener { urine ->
+                       function(urine.toString())
+                   }
+               }
+       }
 }
 
-fun getValuePref(applicationContext: Context, key: String): String{
+fun getValuePref(applicationContext: Context, key: String): String {
     return if (!PreferenceManager(applicationContext).getString(key).isNullOrEmpty())
         PreferenceManager(applicationContext).getString(key) else ""
 }
 
-fun getCurrentUser(applicationContext: Context): UserModel{
-    return UserModel(getValuePref(applicationContext, "user_id"),
+fun getCurrentUser(applicationContext: Context): UserModel {
+    return UserModel(
+        getValuePref(applicationContext, "user_id"),
         getValuePref(applicationContext, "first_name"),
         getValuePref(applicationContext, "last_name"),
         getValuePref(applicationContext, "avatar"),
         getValuePref(applicationContext, "email"),
         getValuePref(applicationContext, "fcm_token"),
-        getValuePref(applicationContext, "password"))
+        getValuePref(applicationContext, "password")
+    )
 }
 
-fun getUser(item: DocumentSnapshot): UserModel{
-    return UserModel(
+fun getUser(item: DocumentSnapshot) = UserModel(
         user_id = item.id,
         first_name = if (item.getString("first_name") != null) item.getString("first_name")!! else "",
         last_name = if (item.getString("last_name") != null) item.getString("last_name")!! else "",
@@ -90,10 +91,10 @@ fun getUser(item: DocumentSnapshot): UserModel{
         avatar = if (item.getString("avatar") != null) item.getString("avatar")!! else "",
         password = if (item.getString("password") != null) item.getString("password")!! else ""
     )
-}
+
 
 fun sendFCMTokenToDatabase(context: Context) {
-    FirebaseInstanceId.getInstance().instanceId.addOnCompleteListener { task->
+    FirebaseInstanceId.getInstance().instanceId.addOnCompleteListener { task ->
         if (task.isSuccessful && task.result != null) {
             val database = FirebaseFirestore.getInstance()
             val documentReference =
@@ -136,12 +137,17 @@ fun signOut(context: Context, activity: Activity) {
     documentReference.update(updates)
         .addOnSuccessListener {
             val editor =
-                context.getSharedPreferences(Constants.KEY_PREFERENCE_NAME,
+                context.getSharedPreferences(
+                    Constants.KEY_PREFERENCE_NAME,
                     AppCompatActivity.MODE_PRIVATE
                 ).edit()
             editor.clear()
             editor.apply()
-            context.startActivity(Intent(context, SignInActivity::class.java).addFlags(FLAG_ACTIVITY_NEW_TASK))
+            context.startActivity(
+                Intent(context, SignInActivity::class.java).addFlags(
+                    FLAG_ACTIVITY_NEW_TASK
+                )
+            )
             activity.finish()
         }
         .addOnFailureListener { showToast("Невозможно выйти", context) }
@@ -156,10 +162,10 @@ fun onMultipleUsersAction(context: Context) {
         user.lastName = it.last_name
         user.token = it.token
         listArray.add(user)
-        if (listArray.size == listChecked.size)
-        {
+        if (listArray.size == listChecked.size) {
             val intent = Intent(context, OutgoingInvitationActivity::class.java).addFlags(
-                FLAG_ACTIVITY_NEW_TASK)
+                FLAG_ACTIVITY_NEW_TASK
+            )
             intent.putExtra("selectedUsers", Gson().toJson(listArray))
             intent.putExtra("type", "audio")
             intent.putExtra("isMultiple", true)
@@ -168,7 +174,7 @@ fun onMultipleUsersAction(context: Context) {
     }
 }
 
-fun sendMessageToFMS(token: String, type: String, callAnswer: String){
+fun sendMessageToFMS(token: String, type: String, callAnswer: String) {
     val tokens = JSONArray()
     tokens.put(token)
     val body = JSONObject()
@@ -176,10 +182,12 @@ fun sendMessageToFMS(token: String, type: String, callAnswer: String){
     data
         .put(
             Constants.REMOTE_MSG_TYPE,
-            type)
+            type
+        )
         .put(
             Constants.REMOTE_MSG_INVITATION_RESPONSE,
-            callAnswer)
+            callAnswer
+        )
     body
         .put(Constants.REMOTE_MSG_DATA, data)
         .put(Constants.REMOTE_MSG_REGISTRATION_IDS, tokens)
@@ -191,7 +199,7 @@ fun sendMessageToFMS(token: String, type: String, callAnswer: String){
     })
 }
 
-fun closeNotification(context: Context){
+fun closeNotification(context: Context) {
     val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE)
             as NotificationManager
     notificationManager.cancel(R.string.default_notification_channel_id)

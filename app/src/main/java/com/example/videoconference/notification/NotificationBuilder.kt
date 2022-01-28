@@ -44,7 +44,7 @@ import com.google.firebase.messaging.RemoteMessage
         lockscreenVisibility = Notification.VISIBILITY_PUBLIC
         vibrationPattern = longArrayOf(200, 200, 100, 100, 50, 100, 300, 500)
     }
-    val notificationManager: NotificationManager =
+    val notificationManager =
         context.getSystemService(FirebaseMessagingService.NOTIFICATION_SERVICE) as NotificationManager
     notificationManager.createNotificationChannel(channel)
  }
@@ -76,7 +76,7 @@ fun createNotification(context: Context, remoteMessage: RemoteMessage){
         context, 1,
         cancelIntent, PendingIntent.FLAG_CANCEL_CURRENT
     )
-    Log.d("My", remoteMessage.data["avatar"].toString())
+
     if (remoteMessage.data["avatar"] != "null" &&
         !remoteMessage.data["avatar"].isNullOrEmpty()
     ) {
